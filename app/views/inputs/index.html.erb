@@ -1,0 +1,79 @@
+<p id="notice"><%= notice %></p>
+<meta charset="utf-8">
+<script src="assets/javascript/D3/d3.v3.js"></script>
+<h1>Listing Inputs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Data</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @inputs.each do |input| %>
+      <tr>
+        <td><%= input.title %></td>
+        <td><%= input.data %></td>
+        <td>
+          <script type="text/javascript">
+      var dataset = <%= input.data.split(",").map(&:to_i) %>;
+      var w = 100;
+      var h = 100;
+      var barPadding = 1;
+
+      var svg = d3.select("body")
+                  .append("svg")
+                  .attr("width", w)
+                  .attr("height", h);
+
+      svg.selectAll("rect")
+         .data(dataset)
+         .enter()
+         .append("rect")
+         .attr("x", function(d, i) {
+             return i * (w/dataset.length);
+         })
+         .attr("y", function(d) {
+             return h - d * 8;
+         })
+         .attr("width", w/dataset.length - barPadding)
+         .attr("height", function(d) {
+             return d * 8;
+         })
+         .attr("fill", function(d) {
+             return "rgb( 255, 0," + (d * 30) + ")";
+         });
+      svg.selectAll("text")
+         .data(dataset)
+         .enter()
+         .append("text")
+         .text(function(d) {
+             return d;
+         })
+         .attr("x", function(d, i) {
+             return i * (w/dataset.length) + (w/dataset.length - barPadding) / 2;
+         })
+         .attr("y", function(d) {
+             return h - (d * 4) + 5;
+         })
+         .attr("font-family", "sans-serif")
+         .attr("font-size", "11px")
+         .attr("fill", "white")
+         .attr("text-anchor", "middle");
+  </script>
+        </td>
+        <td><%= link_to 'Show', input %></td>
+        <td><%= link_to 'Edit', edit_input_path(input) %></td>
+        <td><%= link_to 'Destroy', input, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+
+</table>
+
+<br>
+
+<%= link_to 'New Input', new_input_path %>
